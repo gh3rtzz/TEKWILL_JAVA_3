@@ -67,5 +67,15 @@ public class Main {
         System.out.println(electricVariable.fuelPrice);
 
         bemol1.printFuelTypesAndTheirPrices();
+
+        //Checking if the fuel type is liquid
+
+        FuelType fuelType1 = FuelType.DIESEL_51;
+        FuelType fuelType2 = FuelType.ELECTRIC;
+
+        System.out.println(fuelType1.isLiquidFuel());
+        System.out.println(fuelType2.isLiquidFuel());
+
+        System.out.println(FuelType.METAN.isLiquidFuel());
     }
 }

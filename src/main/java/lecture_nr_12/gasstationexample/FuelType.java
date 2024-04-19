@@ -20,4 +20,9 @@ public enum FuelType {
     public void setFuelPrice(Float fuelPrice) {
         this.fuelPrice = fuelPrice;
     }
+
+    public boolean isLiquidFuel(){
+
+        return this != ELECTRIC && this != PROPANE;
+    }
 }
