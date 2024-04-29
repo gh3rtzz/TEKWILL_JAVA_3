@@ -1,0 +1,3 @@
+Hello!
+This is the text from the test file in the lecture nr 17 package
+Please read me and write something to meWriting from nio methodWriting from nio methodWriting from nio methodWriting from nio method
