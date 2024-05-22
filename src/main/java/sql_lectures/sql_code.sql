@@ -225,4 +225,127 @@ from employee_info ei
 where ea.fk_employee_id is null
    or ei.employee_id is null
 
+-- Creating department table
+
+create table department(
+                           department_id serial primary key,
+                           name text not null,
+                           description text
+);
+
+-- Create employee_department_relationship table
+
+create table employee_department_relationship(
+                                                 relationship_id serial primary key,
+                                                 fk_employee_id int,
+                                                 fk_department_id int,
+                                                 constraint fk_employee_id_const
+                                                     foreign key(fk_employee_id)
+                                                         references employee_info(employee_id),
+                                                 constraint fk_department_id_const
+                                                     foreign key (fk_department_id)
+                                                         references department(department_id)
+);
+
+select *
+from department d;
+
+select *
+from employee_info ei;
+
+select *
+from employee_department_relationship edr;
+
+insert into department (name, description)
+values ('Accounting', 'Everything money related happens here');
+
+-- Add people to departments
+
+-- Anton, Serghei -> Accounting
+-- Andreea -> Software
+-- Alexey, Alexey -> Hardware
+
+insert into employee_department_relationship(fk_employee_id, fk_department_id)
+values
+    (1, 1), (2, 1), (3, 2), (4, 3), (5, 3);
+
+-- select all employees alongside all departments
+
+select ei.employee_id, ei.name, d.name
+from employee_info ei
+         inner join employee_department_relationship edr on ei.employee_id = edr.fk_employee_id
+         inner join department d ON edr.fk_department_id = d.department_id
+order by ei."name";
+
+-- create customer table
+
+create table customer(
+                         customer_id serial primary key,
+                         name text not null,
+                         fiscal_code int not null
+);
+
+--create customer department relationship table
+
+create table customer_department_relationship(
+                                                 relationship_id serial primary key,
+                                                 fk_customer_id int,
+                                                 fk_department_id int,
+                                                 constraint fk_customer_id_const
+                                                     foreign key (fk_customer_id)
+                                                         references customer(customer_id),
+                                                 constraint fk_department_id_const
+                                                     foreign key (fk_department_id)
+                                                         references department(department_id)
+)
+
+--create customer_contact table
+
+create table customer_contact(
+                                 contact_id serial primary key,
+                                 country text not null,
+                                 city text not null,
+                                 address text not null,
+                                 fk_customer_id int,
+                                 constraint fk_customer_id_const
+                                     foreign key (fk_customer_id)
+                                         references customer(customer_id)
+)
+
+select *
+from customer_department_relationship;
+
+select *
+from customer;
+
+insert into customer(name, fiscal_code)
+values
+    ('Google LLC', 12312), ('Apple LLC', 11111), ('Endava ICS', 847123);
+
+insert into customer_department_relationship(fk_customer_id, fk_department_id)
+values(1, 2), (1, 3), (2, 2), (3, 1), (3, 2);
+
+insert into customer_contact (country, city, address, fk_customer_id)
+values ('USA', 'Washington', 'str. Address 1', 1), ('France', 'Paris', 'str. France Street 3', 1),
+       ('Great Britain', 'London', 'str. Address 2', 2), ('Great Britain', 'Coventry', 'str. Address 5', 3);
+
+-- Find out what employees work for what customer
+
+select ei."name", c.name, cc
+from employee_info ei
+         inner join employee_department_relationship edr on ei.employee_id = edr.fk_employee_id
+         inner join department d ON edr.fk_department_id = d.department_id
+         inner join customer_department_relationship cdr on d.department_id = cdr.fk_department_id
+         inner join customer c on cdr.fk_customer_id = c.customer_id
+         inner join customer_contact cc on c.customer_id = cc.fk_customer_id;
+
+-- find out what customers have hired what employees
+
+select *
+from customer c
+         inner join customer_department_relationship cdr on c.customer_id = cdr.fk_customer_id
+         inner join department d on cdr.fk_department_id = d.department_id
+         inner join employee_department_relationship edr on d.department_id = edr.fk_department_id
+         inner join employee_info ei on edr.fk_employee_id = ei.employee_id;
+
 
